@@ -1,12 +1,19 @@
 package pl.lukaszkutylowski.console;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
+import pl.lukaszkutylowski.formatter.TextFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class ConsoleOutputWriter {
 
+    private final TextFormatter textFormatter;
+
     public void print(String s) {
-        System.out.println(s);
+        val formattedText = textFormatter.format(s);
+        System.out.println(formattedText);
     }
 
     public void printMenu() {
