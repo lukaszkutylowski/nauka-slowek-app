@@ -24,7 +24,7 @@ public class LinguController {
     private final Scanner scanner;
 
     void mainLoop() {
-        console.printHello();
+        console.print("Witaj w aplikacji LinguApp");
         int option = UNDEFINED;
         while (option != CLOSE_APP) {
             printMenu();
@@ -45,14 +45,14 @@ public class LinguController {
                 close();
                 break;
             default:
-                console.printOptionUndefined();
+                console.print("Opcja niezdefiniowana");
         }
     }
 
     private void addEntry() {
-        console.printEnterOriginal();
+        console.print("Podaj oryginalną frazę");
         String original = scanner.nextLine();
-        console.printEnterTranslation();
+        console.print("Podaj tłumaczenie");
         String translation = scanner.nextLine();
         Entry entry = new Entry(original, translation);
         entryRepository.add(entry);
@@ -60,33 +60,33 @@ public class LinguController {
 
     private void test() {
         if (entryRepository.isEmpty()) {
-            console.printAddSomePhrase();
+            console.print("Dodaj przynajmniej jedną frazę do bazy");
             return;
         }
         final int testSize = entryRepository.size() > 10 ? 10 : entryRepository.size();
         Set<Entry> randomEntries = entryRepository.getRandomEntries(testSize);
         int score = 0;
         for (Entry entry : randomEntries) {
-            console.printEntryTranslation(entry.getOriginal());
+            console.print("Podaj tłumaczenie dla: " + entry.getOriginal());
             String translation = scanner.nextLine();
             if (entry.getTranslation().equalsIgnoreCase(translation)) {
-                console.printRight();
+                console.print("Odpowiedź poprawna");
                 score++;
             } else {
-                console.printNotRight(entry.getTranslation());
+                console.print("Odpowiedź niepoprawna - " + entry.getTranslation());
             }
         }
-        console.printScore(score, testSize);
+        console.print("Twój wynik to: " + score + "/" + testSize);
     }
 
     private void close() {
         try {
             fileService.saveEntries(entryRepository.getAll());
-            console.printSavedState();
+            console.print("Zapisano stan aplikacji");
         } catch (IOException e) {
-            console.printNotSavedState();
+            console.print("Nie udało sie zapisać zmian");
         }
-        console.printBye();
+        console.print("Bye bye");
     }
 
     private void printMenu() {
