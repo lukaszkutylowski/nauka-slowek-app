@@ -1,7 +1,8 @@
-Entry(original=pies, translation=dog)
-Entry(original=kot, translation=cat)
-Entry(original=samochód, translation=car)
-Entry(original=okno, translation=window)
-Entry(original=czekolada, translation=chocolate)
-Entry(original=język, translation=language)
-Entry(original=długopis, translation=pen)
+pies;dog
+kot;cat
+samochód;car
+okno;window
+czekolada;chocolate
+język;language
+długopis;pen
+komputer;computer

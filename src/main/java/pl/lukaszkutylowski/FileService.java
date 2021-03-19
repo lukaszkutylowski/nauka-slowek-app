@@ -25,7 +25,7 @@ public class FileService {
     void saveEntries(List<Entry> entries) throws IOException {
         val writer = new BufferedWriter(new FileWriter(fileName));
         for (Entry entry : entries) {
-            writer.write(entry.toString());
+            writer.write(entry.getOriginal() + ";" + entry.getTranslation());
             writer.newLine();
         }
         writer.close();
