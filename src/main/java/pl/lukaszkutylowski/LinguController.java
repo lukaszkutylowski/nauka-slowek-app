@@ -3,6 +3,7 @@ package pl.lukaszkutylowski;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import pl.lukaszkutylowski.console.ConsoleOutputWriter;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -19,10 +20,11 @@ public class LinguController {
 
     private final EntryRepository entryRepository;
     private final FileService fileService;
+    private final ConsoleOutputWriter console;
     private final Scanner scanner;
 
     void mainLoop() {
-        System.out.println("Witaj w aplikacji LinguApp");
+        console.printHello();
         int option = UNDEFINED;
         while (option != CLOSE_APP) {
             printMenu();
@@ -43,14 +45,14 @@ public class LinguController {
                 close();
                 break;
             default:
-                System.out.println("Opcja niezdefiniowana");
+                console.printOptionUndefined();
         }
     }
 
     private void addEntry() {
-        System.out.println("Podaj oryginalną frazę");
+        console.printEnterOriginal();
         String original = scanner.nextLine();
-        System.out.println("Podaj tłumaczenie");
+        console.printEnterTranslation();
         String translation = scanner.nextLine();
         Entry entry = new Entry(original, translation);
         entryRepository.add(entry);
@@ -58,40 +60,37 @@ public class LinguController {
 
     private void test() {
         if (entryRepository.isEmpty()) {
-            System.out.println("Dodaj przynajmniej jedną frazę do bazy");
+            console.printAddSomePhrase();
             return;
         }
         final int testSize = entryRepository.size() > 10 ? 10 : entryRepository.size();
         Set<Entry> randomEntries = entryRepository.getRandomEntries(testSize);
         int score = 0;
         for (Entry entry : randomEntries) {
-            System.out.printf("Podaj tłumaczenie dla: \"%s\"\n", entry.getOriginal());
+            console.printEntryTranslation(entry.getOriginal());
             String translation = scanner.nextLine();
             if (entry.getTranslation().equalsIgnoreCase(translation)) {
-                System.out.println("Odpowiedź poprawna");
+                console.printRight();
                 score++;
             } else {
-                System.out.println("Odpowiedź niepoprawna - " + entry.getTranslation());
+                console.printNotRight(entry.getTranslation());
             }
         }
-        System.out.printf("Twój wynik to: %d/%d\n", score, testSize);
+        console.printScore(score, testSize);
     }
 
     private void close() {
         try {
             fileService.saveEntries(entryRepository.getAll());
-            System.out.println("Zapisano stan aplikacji");
+            console.printSavedState();
         } catch (IOException e) {
-            System.out.println("Nie udało sie zapisać zmian");
+            console.printNotSavedState();
         }
-        System.out.println("Bye bye");
+        console.printBye();
     }
 
     private void printMenu() {
-        System.out.println("Wybierz opcję:");
-        System.out.println("0 - dodaj frazę");
-        System.out.println("1 - Test");
-        System.out.println("2 - Koniec programu");
+        console.printMenu();
     }
 
     private int chooseOption() {
